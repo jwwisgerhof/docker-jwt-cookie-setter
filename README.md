@@ -1,0 +1,1 @@
+# docker-jwt-cookie-setter
