@@ -4,4 +4,4 @@ COPY ./app /app
 
 WORKDIR /app
 
-ENTRYPOINT ["npm", "start"];
+ENTRYPOINT ["docker-entrypoint.sh"];
