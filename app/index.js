@@ -15,8 +15,8 @@ app.get("/debug", (req, res) => {
   });
 });
 
-app.get("/cookies/uqjwisge", (req, res) => {
-  const u = require("./users/uqjwisge.json");
+app.get("/cookies/:username", (req, res) => {
+  const u = require(`./users/${req.params.username}.json`);
   const token = jwt.sign(u, jwtSecret);
   res.cookie(cookieName, token, { httpOnly: true, domain: cookieDomain });
   res.json({ message: "Ok, cookie set!" });
