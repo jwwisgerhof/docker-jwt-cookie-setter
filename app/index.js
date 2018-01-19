@@ -1,12 +1,15 @@
 const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const path = require("path");
 const fs = require("fs");
 
 const cookieDomain = process.env.COOKIE_DOMAIN || "localhost";
 const jwtSecret = process.env.JWT_SECRET || "shhhhhh";
 const cookieName = process.env.COOKIE_NAME || "DEV_USER";
+
+app.use(cookieParser());
 
 app.get("/login", (req, res) => {
   let returnUrl = new Buffer("/debug").toString("base64");
@@ -31,6 +34,16 @@ app.get("/login", (req, res) => {
     html += "</div>";
     res.send(html);
   });
+});
+
+app.get("/refresh", (req, res) => {
+  const theJwt = req.cookies[cookieName];
+  res.cookie(cookieName, theJwt, {
+    httpOnly: true,
+    domain: cookieDomain,
+    maxAge: 1000 * 60 * 60
+  });
+  res.send("ok");
 });
 
 app.get("/logout", (req, res) => {
@@ -67,7 +80,11 @@ app.get("/cookies/:username", (req, res) => {
     `./users/${req.params.username}.json`
   ));
   const token = jwt.sign(u, jwtSecret);
-  res.cookie(cookieName, token, { httpOnly: true, domain: cookieDomain });
+  res.cookie(cookieName, token, {
+    httpOnly: true,
+    domain: cookieDomain,
+    maxAge: 1000 * 60 * 60
+  });
   res.redirect(returnUrl);
 });
 
