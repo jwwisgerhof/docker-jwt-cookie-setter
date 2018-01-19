@@ -1,19 +1,13 @@
 {
   "exp": 9512827446,
   "user": {
-    "uuid": "291e2367-787e-4fae-930d-1237c7e172fd",
-    "displayName": "Mr Jan Wisgerhof",
-    "firstName": "Jan",
-    "surname": "Wisgerhof",
-    "mail": "j.wisgerhof@uq.edu.au",
-    "eduPersonPrincipalName": "uqjwisge@uq.edu.au",
-    "auEduPersonSharedToken": "84F-hNgFvfyqrwuy1oCePMNNNNo",
+    "uuid": "abcdefgh",
+    "displayName": "Mr John Doe",
+    "firstName": "John",
+    "surname": "Doe",
+    "mail": "j.doe@no.com",
     "createdAt": "2017-12-05T00:45:56.000Z",
     "updatedAt": "2017-12-05T00:45:56.000Z"
-  },
-  "session": {
-    "name_id": "_f6ab4727e54202e57cfd71d39de2abf97708997b86",
-    "session_index": "_37356c8300fd9d80fe6ec3a6c630bbae8c6982d526"
   },
   "iat": 1512823846
 }
