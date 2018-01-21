@@ -91,4 +91,4 @@ app.get("/cookies/:username", (req, res) => {
 // PUBLICS
 app.use(express.static("public"));
 
-app.listen(4000, () => console.log(`Cookie setting running on port 3000!`));
+app.listen(3000, () => console.log(`Cookie setting running on port 3000!`));
