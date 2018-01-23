@@ -4,10 +4,13 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const fs = require("fs");
+const moment = require("moment");
 
 const cookieDomain = process.env.COOKIE_DOMAIN || "localhost";
 const jwtSecret = process.env.JWT_SECRET || "shhhhhh";
 const cookieName = process.env.COOKIE_NAME || "DEV_USER";
+const refreshCookieName = process.env.REFRESH_COOKIE_NAME || "DEV_USER_REFRESH";
+const baseSelf = process.env.API_BASE || "localhost";
 
 app.use(cookieParser());
 
@@ -38,11 +41,36 @@ app.get("/login", (req, res) => {
 
 app.get("/refresh", (req, res) => {
   const theJwt = req.cookies[cookieName];
+  const expiry = moment(new Date())
+    .add(10, "minutes")
+    .toDate();
+
+  const u = require(path.join(
+    __dirname,
+    `./users/${req.params.username}.json`
+  ));
+  // Login token
   res.cookie(cookieName, theJwt, {
     httpOnly: true,
     domain: cookieDomain,
-    maxAge: 1000 * 60 * 60
+    expires: expiry
   });
+
+  // Refresh token
+  res.cookie(
+    refreshCookieName,
+    Buffer.from(
+      JSON.stringify({
+        expiry: expiry,
+        refresh: baseSelf + "/refresh"
+      })
+    ).toString("base64"),
+    {
+      httpOnly: false,
+      domain: cookieDomain,
+      expires: expiry
+    }
+  );
   res.send("ok");
 });
 
@@ -75,16 +103,39 @@ app.get("/cookies/:username", (req, res) => {
     returnUrl = Buffer.from(req.query.return, "base64").toString();
   }
 
+  const expiry = moment(new Date())
+    .add(10, "minutes")
+    .toDate();
+
   const u = require(path.join(
     __dirname,
     `./users/${req.params.username}.json`
   ));
+  // Login token
   const token = jwt.sign(u, jwtSecret);
   res.cookie(cookieName, token, {
     httpOnly: true,
     domain: cookieDomain,
-    maxAge: 1000 * 60 * 60
+    expires: expiry
   });
+
+  // Refresh token
+  res.cookie(
+    refreshCookieName,
+    Buffer.from(
+      JSON.stringify({
+        expiry: expiry,
+        refresh: baseSelf + "/refresh"
+      })
+    ).toString("base64"),
+    {
+      httpOnly: false,
+      domain: cookieDomain,
+      expires: expiry
+    }
+  );
+
+  // Redirect user back
   res.redirect(returnUrl);
 });
 
