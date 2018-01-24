@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const fs = require("fs");
 const moment = require("moment");
+const cors = require("cors");
 
 const cookieDomain = process.env.COOKIE_DOMAIN || "localhost";
 const jwtSecret = process.env.JWT_SECRET || "shhhhhh";
@@ -13,6 +14,9 @@ const refreshCookieName = process.env.REFRESH_COOKIE_NAME || "DEV_USER_REFRESH";
 const baseSelf = process.env.API_BASE || "localhost";
 
 app.use(cookieParser());
+app.use(cors());
+
+app.options("*", cors());
 
 app.get("/login", (req, res) => {
   let returnUrl = new Buffer("/debug").toString("base64");
