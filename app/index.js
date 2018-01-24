@@ -67,7 +67,7 @@ app.get("/refresh", (req, res) => {
     refreshCookieName,
     Buffer.from(
       JSON.stringify({
-        expiry: Number.floor(expiry.getTime() / 1000),
+        expiry: Math.floor(expiry.getTime() / 1000),
         refresh: baseSelf + "/refresh"
       })
     ).toString("base64"),
@@ -130,7 +130,7 @@ app.get("/cookies/:username", (req, res) => {
     refreshCookieName,
     Buffer.from(
       JSON.stringify({
-        expiry: Number.floor(expiry.getTime() / 1000),
+        expiry: Math.floor(expiry.getTime() / 1000),
         refresh: baseSelf + "/refresh"
       })
     ).toString("base64"),
