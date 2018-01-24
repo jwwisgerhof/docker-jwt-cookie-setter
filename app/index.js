@@ -12,11 +12,17 @@ const jwtSecret = process.env.JWT_SECRET || "shhhhhh";
 const cookieName = process.env.COOKIE_NAME || "DEV_USER";
 const refreshCookieName = process.env.REFRESH_COOKIE_NAME || "DEV_USER_REFRESH";
 const baseSelf = process.env.API_BASE || "localhost";
+const corsOrigin = process.env.CORS_ORIGIN || "localhost";
+
+const corsOptions = {
+  credentials: true,
+  origin: corsOrigin
+};
 
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 
-app.options("*", cors());
+app.options("*", cors(corsOptions));
 
 app.get("/login", (req, res) => {
   let returnUrl = new Buffer("/debug").toString("base64");
