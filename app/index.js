@@ -45,10 +45,6 @@ app.get("/refresh", (req, res) => {
     .add(10, "minutes")
     .toDate();
 
-  const u = require(path.join(
-    __dirname,
-    `./users/${req.params.username}.json`
-  ));
   // Login token
   res.cookie(cookieName, theJwt, {
     httpOnly: true,
