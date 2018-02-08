@@ -20,7 +20,7 @@ const corsOptions = {
 };
 
 const cookieOptions = (httpOnly, expiry) => {
-  const options = { httpOnly, expires };
+  const options = { httpOnly, expires: expiry };
   if (cookieDomain !== "localhost") {
     options.domain = cookieDomain;
   }
