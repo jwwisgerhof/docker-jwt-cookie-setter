@@ -7,16 +7,24 @@ const fs = require("fs");
 const moment = require("moment");
 const cors = require("cors");
 
-const cookieDomain = process.env.COOKIE_DOMAIN || "localhost";
 const jwtSecret = process.env.JWT_SECRET || "shhhhhh";
 const cookieName = process.env.COOKIE_NAME || "DEV_USER";
 const refreshCookieName = process.env.REFRESH_COOKIE_NAME || "DEV_USER_REFRESH";
 const baseSelf = process.env.API_BASE || "localhost";
 const corsOrigin = process.env.CORS_ORIGIN || "localhost";
+const cookieDomain = process.env.COOKIE_DOMAIN || "localhost";
 
 const corsOptions = {
   credentials: true,
   origin: corsOrigin
+};
+
+const cookieOptions = (httpOnly, expiry) => {
+  const options = { httpOnly, expires };
+  if (cookieDomain !== "localhost") {
+    options.domain = cookieDomain;
+  }
+  return options;
 };
 
 app.use(cookieParser());
@@ -56,11 +64,7 @@ app.get("/refresh", (req, res) => {
     .toDate();
 
   // Login token
-  res.cookie(cookieName, theJwt, {
-    httpOnly: true,
-    domain: cookieDomain,
-    expires: expiry
-  });
+  res.cookie(cookieName, theJwt, cookieOptions(true, expiry));
 
   // Refresh token
   res.cookie(
@@ -71,11 +75,7 @@ app.get("/refresh", (req, res) => {
         refresh: baseSelf + "/refresh"
       })
     ).toString("base64"),
-    {
-      httpOnly: false,
-      domain: cookieDomain,
-      expires: expiry
-    }
+    cookieOptions(false, expiry)
   );
   res.send("ok");
 });
@@ -119,11 +119,7 @@ app.get("/cookies/:username", (req, res) => {
   ));
   // Login token
   const token = jwt.sign(u, jwtSecret);
-  res.cookie(cookieName, token, {
-    httpOnly: true,
-    domain: cookieDomain,
-    expires: expiry
-  });
+  res.cookie(cookieName, token, cookieOptions(true, expiry));
 
   // Refresh token
   res.cookie(
@@ -134,11 +130,7 @@ app.get("/cookies/:username", (req, res) => {
         refresh: baseSelf + "/refresh"
       })
     ).toString("base64"),
-    {
-      httpOnly: false,
-      domain: cookieDomain,
-      expires: expiry
-    }
+    cookieOptions(false, expiry)
   );
 
   // Redirect user back
