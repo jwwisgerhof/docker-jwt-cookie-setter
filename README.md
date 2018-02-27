@@ -12,3 +12,4 @@ example: http://localhost:3000/cookies/sample. Runs on port 3000.
 * COOKIE_DOMAIN
 * JWT_SECRET
 * COOKIE_NAME
+* `COOKIE_EXPIRY` In minutes
