@@ -7,7 +7,8 @@ const fs = require('fs');
 const moment = require('moment');
 const cors = require('cors');
 
-const jwtSecret = process.env.JWT_SECRET || 'shhhhhh';
+const jwtSigningKey = process.env.JWT_SIGNING_KEY || 'shhhhhh';
+const jwtEncryptionKey = process.env.JWT_ENCRYPTION_KEY || undefined;
 const cookieName = process.env.COOKIE_NAME || 'DEV_USER';
 const refreshCookieName = process.env.REFRESH_COOKIE_NAME || 'DEV_USER_REFRESH';
 const baseSelf = process.env.API_BASE || 'localhost';
@@ -34,7 +35,7 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 app.get('/login', (req, res) => {
-  let returnUrl = new Buffer('/debug').toString('base64');
+  let returnUrl = new Buffer('/reflector').toString('base64');
   if (req.query.return) {
     returnUrl = req.query.return;
   }
@@ -98,12 +99,22 @@ app.get('/debug', (req, res) => {
     status: 'ok',
     cookieDomain,
     cookieName,
-    jwtSecret,
+    jwtSigningKey,
+    jwtEncryptionKey
   });
 });
 
+app.get('/reflector', (req, res) => {
+  // Verify the JWT with the given secret key
+  const verified = jwt.verify(req.cookies[cookieName], jwtSigningKey, {
+    clockTolerance: 10,
+  }); 
+
+  res.json(verified);
+});
+
 app.get('/cookies/:username', (req, res) => {
-  let returnUrl = '/debug';
+  let returnUrl = '/reflector';
   if (req.query.return) {
     returnUrl = Buffer.from(req.query.return, 'base64').toString();
   }
@@ -112,7 +123,7 @@ app.get('/cookies/:username', (req, res) => {
 
   const u = require(path.join(__dirname, `./users/${req.params.username}.json`));
   // Login token
-  const token = jwt.sign(u, jwtSecret);
+  const token = jwt.sign(u, jwtSigningKey);
   res.cookie(cookieName, token, cookieOptions(true, expiry));
 
   // Refresh token

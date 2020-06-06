@@ -10,6 +10,7 @@ example: http://localhost:3000/cookies/sample. Runs on port 3000.
 ## Environment variables
 
 * COOKIE_DOMAIN
-* JWT_SECRET
+* JWT_SIGNING_KEY
+* JWT_ENCRYPTION_KEY
 * COOKIE_NAME
 * `COOKIE_EXPIRY` In minutes
